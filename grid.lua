@@ -81,3 +81,15 @@ function destroyRow(rowNum)
 		end
 	end
 end
+
+function hasBlock(colNum, rowNum)
+	return not gameGrid[rowNum][colNum].empty
+end
+
+function getGridHeight()
+	return gridHeight
+end
+
+function getGridWidth()
+	return gridWidth
+end
