@@ -1,7 +1,7 @@
 require("grid")
 require("compound")
 
-local gameSpeed = 0.5
+local gameSpeed = 0.2
 local gridHeight = 20
 local gridWidth = 10
 local activeBlock = {}
@@ -10,35 +10,18 @@ local time = 0
 width, height = love.window.getDimensions()
 
 function love.load()
+	love.keyboard.setKeyRepeat(true)
 	love.graphics.setBackgroundColor(190, 190, 190)
 	initializeGrid(gridHeight, gridWidth)
-	local compoundNumber = love.math.random(7)
+	newBlock()
 
-	print(compoundNumber)
-
-	if compoundNumber == 1 then
-		activeBlock = makeColumn(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	elseif compoundNumber == 2 then
-		activeBlock = makeLeftL(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	elseif compoundNumber == 3 then
-		activeBlock = makeRightL(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	elseif compoundNumber == 4 then
-		activeBlock = makeT(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	elseif compoundNumber == 5 then
-		activeBlock = makeBox(gridHeight, gridWidth, (gridWidth / 2), 1)
-	elseif compoundNumber == 6 then
-		activeBlock = makeFunkyLeft(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	elseif compoundNumber == 7 then
-		activeBlock = makeFunkyRight(gridHeight, gridWidth, (gridWidth / 2) -1, 1)
-	end
-
-	drawCompound(activeBlock)
+	placeCompound(makeColumn(5, 20))
 
 end
 
 
 function love.draw()
-	fillGrid()
+	paintGrid()
 	drawGridLines()
 end
 
@@ -53,24 +36,53 @@ end
 
 
 function tick()
-	destroyCompound(activeBlock)
+	if isCompoundGrounded(activeBlock) then
+		print("yay")
+	end
 
-	dropCompound(activeBlock)
+	-- if isCompoundGrounded(activeBlock) then
+	-- 	checkRows()
+	-- 	newBlock()
+	-- end
 
-	drawCompound(activeBlock)
-
+	moveCompound(activeBlock, 0, 1)
 end
 
 function love.keypressed(key)
 	if key == "left" then
-		destroyCompound(activeBlock)
-		moveLeft(activeBlock)
-		drawCompound(activeBlock)
+		moveCompound(activeBlock, -1, 0)
 	end
 
 	if key == "right" then
-		destroyCompound(activeBlock)
-		moveRight(activeBlock)
-		drawCompound(activeBlock)
+		moveCompound(activeBlock, 1, 0)
 	end
+
+-- 	if key == " " then
+-- 		destroyCompound(activeBlock)
+-- 		activeBlock.rotate()
+-- 		drawCompound(activeBlock)
+-- 	end
+end
+
+function newBlock()
+	local compoundNumber = love.math.random(7)
+	compoundNumber = 5
+	if compoundNumber == 1 then
+		activeBlock = makeColumn((gridWidth / 2) -1, 1)
+	elseif compoundNumber == 2 then
+		activeBlock = makeLeftL((gridWidth / 2) -1, 1)
+	elseif compoundNumber == 3 then
+		activeBlock = makeRightL((gridWidth / 2) -1, 1)
+	elseif compoundNumber == 4 then
+		activeBlock = makeT((gridWidth / 2) -1, 1)
+	elseif compoundNumber == 5 then
+		activeBlock = makeBox((gridWidth / 2), 1)
+	elseif compoundNumber == 6 then
+		activeBlock = makeFunkyLeft((gridWidth / 2) -1, 1)
+	elseif compoundNumber == 7 then
+		activeBlock = makeFunkyRight((gridWidth / 2) -1, 1)
+	end
+
+	placeCompound(activeBlock)
+
 end

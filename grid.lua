@@ -10,26 +10,6 @@ local emptyBlock = {
 		}
 }
 
-function drawGridLines()
-	love.graphics.setColor(60, 60, 60)
-	for i = 1, gridWidth do
-		love.graphics.line((height/(2*gridWidth))*i, 0, (height/(2*gridWidth))*i, height)
-	end
-	for i = 1, gridHeight do
-		love.graphics.line(0, (height/gridHeight)*i, height/2, (height/gridHeight)*i)
-	end
-end
-
-function fillGrid()
-	for i = 1, gridHeight do
-		for j = 1, gridWidth do
-			local block = gameGrid[i][j]
-			love.graphics.setColor(block.color.red, block.color.green, block.color.blue)
-			love.graphics.rectangle("fill", (j-1)*(height/(2*gridWidth)), (i-1)*(height/gridHeight), height/(2*gridWidth), height/gridHeight)
-		end
-	end
-end
-
 function initializeGrid(h, w)
 	gridHeight = h
 	gridWidth = w
@@ -43,7 +23,27 @@ function initializeGrid(h, w)
 	end
 end
 
-function placeBlock(x, y, c)
+function drawGridLines()
+	love.graphics.setColor(60, 60, 60)
+	for i = 1, gridWidth do
+		love.graphics.line((height/(2*gridWidth))*i, 0, (height/(2*gridWidth))*i, height)
+	end
+	for i = 1, gridHeight do
+		love.graphics.line(0, (height/gridHeight)*i, height/2, (height/gridHeight)*i)
+	end
+end
+
+function paintGrid()
+	for i = 1, gridHeight do
+		for j = 1, gridWidth do
+			local block = getSlot(j, i)
+			love.graphics.setColor(block.color.red, block.color.green, block.color.blue)
+			love.graphics.rectangle("fill", (j-1)*(height/(2*gridWidth)), (i-1)*(height/gridHeight), height/(2*gridWidth), height/gridHeight)
+		end
+	end
+end
+
+function fillSlot(x, y, c)
 	gameGrid[y][x] = {
 		empty = false,
 		color = c
@@ -51,45 +51,37 @@ function placeBlock(x, y, c)
 end
 
 
-function destroyBlock(x, y)
+function clearSlot(x, y)
 	gameGrid[y][x] = emptyBlock
 end
 
-function checkRows()
-	for i = 1, gridHeight do
-		local full = true
-		for j = 1, gridWidth do
-			if gameGrid[i][j].empty then
-				full = false
-				break
-			end
-		end
-		if full then
-			destroyRow(i)
-		end
-	end
-end
-
-function destroyRow(rowNum)
+function destroyRow(y)
 	for i = 1, gridWidth do
-		gameGrid[rowNum][i] = emptyBlock
+		clearSlot(i, y)
 	end
+end
 
-	for i = rowNum, 2, -1 do
-		for j = 1, gridWidth do
-			gameGrid[i][j] = gameGrid[i - 1][j]
+function getGridDimensions()
+	return gridWidth, gridHeight
+end
+
+function getSlot(x, y)
+	return gameGrid[y][x]
+end
+
+
+function isSlotEmpty(x, y)
+	return getSlot(x,y).empty
+end
+
+
+function isRowFull(y)
+	for i = 1, gridWidth do
+		if isSlotEmpty(i, y) then
+			return false
 		end
 	end
+
+	return true
 end
 
-function hasBlock(colNum, rowNum)
-	return not gameGrid[rowNum][colNum].empty
-end
-
-function getGridHeight()
-	return gridHeight
-end
-
-function getGridWidth()
-	return gridWidth
-end
