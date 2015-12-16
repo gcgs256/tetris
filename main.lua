@@ -15,7 +15,8 @@ function love.load()
 	initializeGrid(gridHeight, gridWidth)
 	newBlock()
 
-	placeCompound(makeColumn(5, 20))
+	--placeCompound(makeColumn(7, 20))
+	--placeCompound(makeColumn(3, 20))
 
 end
 
@@ -37,7 +38,13 @@ end
 
 function tick()
 	if isCompoundGrounded(activeBlock) then
-		print("yay")
+		for i = 1, gridHeight do
+			if isRowFull(i) then
+				destroyRow(i)
+				--move rows down here
+			end
+		end
+		newBlock()
 	end
 
 	-- if isCompoundGrounded(activeBlock) then
@@ -66,7 +73,7 @@ end
 
 function newBlock()
 	local compoundNumber = love.math.random(7)
-	compoundNumber = 5
+	compoundNumber = 7
 	if compoundNumber == 1 then
 		activeBlock = makeColumn((gridWidth / 2) -1, 1)
 	elseif compoundNumber == 2 then

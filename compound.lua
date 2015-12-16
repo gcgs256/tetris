@@ -272,19 +272,20 @@ end
 
 function isCompoundGrounded(compound) --check y position to see if its on the ground/on another block
 	local subBlocks = compound.getSubBlocks()
-	local dy = 1
 	for _, subBlock in ipairs(subBlocks) do
 		gridWidth, gridHeight = getGridDimensions() --do i need local here? didnt put bc of moveCompound function not having
+
+		--checks if compound is on the bottom of the grid
 		if subBlock[2] == gridHeight then
 			return true
 		end
 
-		local beneathBlock = {subBlock[1], subBlock[2] + dy}
+		local beneathBlock = {subBlock[1], subBlock[2] + 1}
 
-		--need to determine whether the subBlock is touching another compound's subBlock
+		--need to determine whether the subBlock is touching another compound's subBlock without considering itself
 		local itself = false
 		for _, other in ipairs(subBlocks) do
-			if beneathBlock[2] == other[2] then
+			if beneathBlock[2] == other[2] and beneathBlock[1] == other[1] then
 				itself = true
 			end
 		end
