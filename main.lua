@@ -124,6 +124,12 @@ function love.keypressed(key)
 		end
 	end
 
+	if key == " " then
+		while not isCompoundGrounded(activeBlock) do
+			moveCompound(activeBlock, 0, 1)
+		end
+	end
+
 end
 
 function newBlock()
