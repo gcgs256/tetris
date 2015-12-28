@@ -1,11 +1,16 @@
 require("grid")
 require("compound")
+--gamespeed should be 0.35 for actual play
 
-local gameSpeed = 0.2
+local gameSpeed = 0.1
+local level = 1
 local gridHeight = 20
 local gridWidth = 10
 local activeBlock = {}
 local time = 0
+local rowCounter = 0
+local levelAdditionCounter = 0
+local score = 0
 
 width, height = love.window.getDimensions()
 
@@ -27,6 +32,7 @@ end
 function love.draw()
 	paintGrid()
 	drawGridLines()
+	printStats()	
 end
 
 
@@ -42,12 +48,20 @@ end
 function tick()
 	if isCompoundGrounded(activeBlock) then
 
+		local tempRows = rowCounter
+
 		--check if the row is full, delete it and move other rows down if it is
 		for i = 1, gridHeight do
 			if isRowFull(i) then
-				--print("row" .. i .. "has been detected as full. destroying...")
-				
 				destroyRow(i)
+				score = score + 100
+				rowCounter = rowCounter + 1
+				levelAdditionCounter = levelAdditionCounter + 1
+				if levelAdditionCounter == 5 then
+					levelAdditionCounter = 0
+					level = level + 1
+					gameSpeed = 0.8 * gameSpeed
+				end
 
 				--move rows down here
 				for j = i - 1, 1, -1 do
@@ -56,6 +70,12 @@ function tick()
 
 			end
 		end
+
+		if (rowCounter - tempRows) > 1 then
+			score = score + (rowCounter - tempRows) * 50
+		end
+
+		print(score)
 
 		newBlock()
 	end
@@ -84,7 +104,6 @@ function love.keypressed(key)
 	-- end
 
 	if key == "up" then
-		tempBlock = deepcopy(activeBlock)
 		destroyCompound(activeBlock)
 		activeBlock.rotate()
 		if canCompoundBePlaced(activeBlock) then
@@ -101,7 +120,7 @@ end
 
 function newBlock()
 	local compoundNumber = love.math.random(7)
-	--compoundNumber = 7
+	compoundNumber = 1
 	if compoundNumber == 1 then
 		activeBlock = makeColumn((gridWidth / 2) - 1, 1)
 	elseif compoundNumber == 2 then
@@ -126,18 +145,14 @@ function newBlock()
 	end
 end
 
+function printStats()
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.rectangle("line", (13 * height) / 25, 3 * height / 5, 19 * height / 50, (1 * height) / 5)
+	font = love.graphics.newFont(20)
+	love.graphics.setFont(font)
+	love.graphics.setColor(153, 0, 76)
+	love.graphics.print("Score: " .. score, (8 * height) / 15, (25 * height) / 40)
+	love.graphics.print("Level: " .. level, (8 * height) / 15, (27 * height) / 40)
+	love.graphics.print("Rows Destroyed: " .. rowCounter, (8 * height) / 15, (29 * height) / 40)
 
-function deepcopy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[deepcopy(orig_key)] = deepcopy(orig_value)
-        end
-        setmetatable(copy, deepcopy(getmetatable(orig)))
-    else -- number, string, boolean, etc
-        copy = orig
-    end
-    return copy
 end
