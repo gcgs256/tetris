@@ -1,5 +1,6 @@
 require("grid")
 require("compound")
+require("randgen")
 --gamespeed should be ~0.35 for actual play
 
 local gameSpeed = 0.1
@@ -133,8 +134,8 @@ function love.keypressed(key)
 end
 
 function newBlock()
-	local compoundNumber = love.math.random(7)
-	compoundNumber = 1
+	local compoundNumber = nextCompound()
+	--compoundNumber = 1
 	if compoundNumber == 1 then
 		activeBlock = makeColumn((gridWidth / 2) - 1, 1)
 	elseif compoundNumber == 2 then
