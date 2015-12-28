@@ -1,6 +1,6 @@
 require("grid")
 require("compound")
---gamespeed should be 0.35 for actual play
+--gamespeed should be ~0.35 for actual play
 
 local gameSpeed = 0.1
 local level = 1
@@ -11,6 +11,8 @@ local time = 0
 local rowCounter = 0
 local levelAdditionCounter = 0
 local score = 0
+local timeSinceLastMove = 0
+local timeSinceLastMoveThreshold = 0.25
 
 width, height = love.window.getDimensions()
 
@@ -38,6 +40,7 @@ end
 
 function love.update(dt)
 	time = time + dt
+	timeSinceLastMove = timeSinceLastMove + dt
 	if time >= gameSpeed then
 		tick()
 		time = time - gameSpeed
@@ -75,9 +78,9 @@ function tick()
 			score = score + (rowCounter - tempRows) * 50
 		end
 
-		print(score)
-
-		newBlock()
+		if timeSinceLastMove > timeSinceLastMoveThreshold then
+			newBlock()
+		end
 	end
 
 	moveCompound(activeBlock, 0, 1)
@@ -86,11 +89,15 @@ end
 
 function love.keypressed(key)
 	if key == "left" then
-		moveCompound(activeBlock, -1, 0)
+		if moveCompound(activeBlock, -1, 0) then
+			timeSinceLastMove = 0
+		end
 	end
 
 	if key == "right" then
-		moveCompound(activeBlock, 1, 0)
+		if moveCompound(activeBlock, 1, 0) then
+			timeSinceLastMove = 0
+		end
 	end
 
 	if key == "q" or key == "escape" then
@@ -108,6 +115,7 @@ function love.keypressed(key)
 		activeBlock.rotate()
 		if canCompoundBePlaced(activeBlock) then
 			placeCompound(activeBlock)
+			timeSinceLastMove = 0
 		else
 			activeBlock.rotate()
 			activeBlock.rotate()
