@@ -10,10 +10,10 @@ function makeColumn(startX, startY)
 			{self.positionX + 2, self.positionY},
 			{self.positionX + 3, self.positionY}}
 		elseif self.orientation == 2 then
-			return{{self.positionX, self.positionY},
-			{self.positionX , self.positionY + 1},
-			{self.positionX, self.positionY + 2},
-			{self.positionX, self.positionY + 3}}
+			return{{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY + 1},
+			{self.positionX + 1, self.positionY + 2}}
 		end
 	end
 
@@ -48,13 +48,30 @@ function makeColumn(startX, startY)
 end
 
 function makeLeftL(startX, startY)
-	local self = {color = {red = 0, green = 175, blue = 0}, positionX = startX, positionY = startY}
+	local self = {color = {red = 0, green = 175, blue = 0}, positionX = startX, positionY = startY, orientation = 1}
 
 	local getSubBlocks = function()
-		return{{self.positionX, self.positionY},
-		{self.positionX, self.positionY + 1},
-		{self.positionX + 1, self.positionY + 1},
-		{self.positionX + 2, self.positionY + 1}}
+		if self.orientation == 1 then
+			return{{self.positionX, self.positionY + 1},
+			{self.positionX, self.positionY},
+			{self.positionX - 1, self.positionY},
+			{self.positionX - 2, self.positionY}}
+		elseif self.orientation == 2 then
+			return{{self.positionX - 2, self.positionY + 1},
+			{self.positionX - 1, self.positionY + 1},
+			{self.positionX - 1, self.positionY},
+			{self.positionX - 1, self.positionY - 1}}
+		elseif self.orientation == 3 then
+			return{{self.positionX - 2, self.positionY - 1},
+			{self.positionX - 2, self.positionY},
+			{self.positionX - 1, self.positionY},
+			{self.positionX, self.positionY}}
+		elseif self.orientation == 4 then
+			return{{self.positionX, self.positionY - 1},
+			{self.positionX - 1, self.positionY - 1},
+			{self.positionX - 1, self.positionY},
+			{self.positionX - 1, self.positionY + 1}}
+		end
 	end
 
 	local getColor = function()
@@ -70,21 +87,51 @@ function makeLeftL(startX, startY)
 		self.positionY = y
 	end
 
+	local rotate = function()
+		if self.orientation == 1 then
+			self.orientation = 2
+		elseif self.orientation == 2 then
+			self.orientation = 3
+		elseif self.orientation == 3 then
+			self.orientation = 4
+		elseif self.orientation == 4 then
+			self.orientation = 1
+		end
+	end
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition,
+	rotate = rotate}
 end
 
 
 function makeRightL(startX, startY)
-	local self = {color = {red = 0, green = 100, blue = 220}, positionX = startX, positionY = startY}
+	local self = {color = {red = 0, green = 100, blue = 220}, positionX = startX, positionY = startY, orientation = 1}
 
 	local getSubBlocks = function()
-		return{{self.positionX + 2, self.positionY},
-		{self.positionX, self.positionY + 1},
-		{self.positionX + 1, self.positionY + 1},
-		{self.positionX + 2, self.positionY + 1}}
+		if self.orientation == 1 then
+			return{{self.positionX, self.positionY + 1},
+			{self.positionX, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 2, self.positionY}}
+		elseif self.orientation == 2 then
+			return{{self.positionX, self.positionY - 1},
+			{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY + 1}}
+		elseif self.orientation == 3 then
+			return{{self.positionX + 2, self.positionY - 1},
+			{self.positionX + 2, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX, self.positionY}}
+		elseif self.orientation == 4 then
+			return{{self.positionX + 2, self.positionY + 1},
+			{self.positionX + 1, self.positionY + 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY - 1}}
+		end
 	end
 
 	local getColor = function()
@@ -100,21 +147,52 @@ function makeRightL(startX, startY)
 		self.positionY = y
 	end
 
+
+	local rotate = function()
+		if self.orientation == 1 then
+			self.orientation = 2
+		elseif self.orientation == 2 then
+			self.orientation = 3 
+		elseif self.orientation == 3 then
+			self.orientation = 4
+		elseif self.orientation == 4 then
+			self.orientation = 1
+		end
+	end
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition, 
+	rotate = rotate}
 end
 
 
 function makeT(startX, startY)
-	local self = {color = {red = 255, green = 51, blue = 152}, positionX = startX, positionY = startY}
+	local self = {color = {red = 255, green = 51, blue = 152}, positionX = startX, positionY = startY, orientation = 1}
 
 	local getSubBlocks = function()
-		return{{self.positionX + 1, self.positionY},
-		{self.positionX, self.positionY + 1},
-		{self.positionX + 1, self.positionY + 1},
-		{self.positionX + 2, self.positionY + 1}}
+		if self.orientation == 1 then
+			return{{self.positionX + 1, self.positionY + 1},
+			{self.positionX, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 2, self.positionY}}
+		elseif self.orientation == 2 then
+			return{{self.positionX, self.positionY},
+			{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY + 1}}
+		elseif self.orientation == 3 then
+			return{{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 2, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX, self.positionY}}
+		elseif self.orientation == 4 then
+			return{{self.positionX + 2, self.positionY},
+			{self.positionX + 1, self.positionY + 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY - 1}}
+		end
 	end
 
 	local getColor = function()
@@ -130,10 +208,23 @@ function makeT(startX, startY)
 		self.positionY = y
 	end
 
+	local rotate = function()
+		if self.orientation == 1 then
+			self.orientation = 2
+		elseif self.orientation == 2 then
+			self.orientation = 3 
+		elseif self.orientation == 3 then
+			self.orientation = 4
+		elseif self.orientation == 4 then
+			self.orientation = 1
+		end
+	end
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition,
+	rotate = rotate}
 end
 
 function makeBox(startX, startY)
@@ -159,20 +250,30 @@ function makeBox(startX, startY)
 		self.positionY = y
 	end
 
+	local rotate = function() end
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition,
+	rotate = rotate}
 end
 
 function makeFunkyLeft(startX, startY)
-	local self = {color = {red = 180, green = 0, blue = 220}, positionX = startX, positionY = startY}
+	local self = {color = {red = 180, green = 0, blue = 220}, positionX = startX, positionY = startY, orientation = 1}
 
 	local getSubBlocks = function()
-		return{{self.positionX + 2, self.positionY},
-		{self.positionX + 1, self.positionY},
-		{self.positionX + 1, self.positionY + 1},
-		{self.positionX, self.positionY + 1}}
+		if self.orientation == 1 then
+			return{{self.positionX + 2, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY + 1},
+			{self.positionX, self.positionY + 1}}
+		elseif self.orientation == 2 then
+			return{{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 2, self.positionY},
+			{self.positionX + 2, self.positionY + 1}}
+		end
 	end
 
 	local getColor = function()
@@ -188,20 +289,37 @@ function makeFunkyLeft(startX, startY)
 		self.positionY = y
 	end
 
+	local rotate = function()
+		if self.orientation == 1 then
+			self.orientation = 2
+		elseif self.orientation == 2 then
+			self.orientation = 1
+		end
+	end
+
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition,
+	rotate = rotate}
 end
 
 function makeFunkyRight(startX, startY)
-	local self = {color = {red = 30, green = 30, blue = 30}, positionX = startX, positionY = startY}
+	local self = {color = {red = 30, green = 30, blue = 30}, positionX = startX, positionY = startY, orientation = 1}
 
 	local getSubBlocks = function()
-		return{{self.positionX, self.positionY},
-		{self.positionX + 1, self.positionY},
-		{self.positionX + 1, self.positionY + 1},
-		{self.positionX + 2, self.positionY + 1}}
+		if self.orientation == 1 then
+			return{{self.positionX, self.positionY},
+			{self.positionX + 1, self.positionY},
+			{self.positionX + 1, self.positionY + 1},
+			{self.positionX + 2, self.positionY + 1}}
+		elseif self.orientation == 2 then
+			return{{self.positionX + 1, self.positionY - 1},
+			{self.positionX + 1, self.positionY},
+			{self.positionX, self.positionY},
+			{self.positionX, self.positionY + 1}}
+		end
 	end
 
 	local getColor = function()
@@ -217,10 +335,19 @@ function makeFunkyRight(startX, startY)
 		self.positionY = y
 	end
 
+	local rotate = function()
+		if self.orientation == 1 then
+			self.orientation = 2
+		elseif self.orientation == 2 then
+			self.orientation = 1
+		end
+	end
+
 	return {getSubBlocks = getSubBlocks,
 	getColor = getColor,
 	getPosition = getPosition,
-	setPosition = setPosition}
+	setPosition = setPosition,
+	rotate = rotate}
 end
 
 
@@ -231,12 +358,34 @@ function placeCompound(compound)
 	end
 end
 
-local function destroyCompound(compound)
+function destroyCompound(compound)
 	local subBlocks = compound.getSubBlocks()
 	for i = 1, 4 do
 		clearSlot(subBlocks[i][1], subBlocks[i][2])
 	end
 end
+
+--compound given to function should be in new position
+function canCompoundBePlaced(compound)
+	gridWidth, gridHeight = getGridDimensions()
+	--check if compound is off the grid
+
+	local subBlocks = compound.getSubBlocks()
+
+	for _, subBlock in ipairs(subBlocks) do
+
+		if subBlock[1] < 1 or subBlock[1] > gridWidth or subBlock[2] < 1 or subBlock[2] > gridHeight then
+			return false
+		end
+
+		if not isSlotEmpty(subBlock[1], subBlock[2]) then
+			return false
+		end
+	end
+
+	return true
+end
+
 
 function moveCompound(compound, dx, dy)
 	local subBlocks = compound.getSubBlocks()
@@ -247,16 +396,12 @@ function moveCompound(compound, dx, dy)
 			return false
 		end
 
-		--print(newPosition[2])
-
 		local itself = false
 		for _, other in ipairs(subBlocks) do
 			if newPosition[1] == other[1] and newPosition[2] == other[2] then
 				itself = true
 			end
 		end
-
-		--print(itself)
 
 		if not itself and not isSlotEmpty(newPosition[1], newPosition[2]) then
 			return false

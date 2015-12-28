@@ -85,3 +85,16 @@ function isRowFull(y)
 	return true
 end
 
+function moveRowDown(y)
+
+	for i = 1, gridWidth do
+		if not isSlotEmpty(i , y) then
+			local temp = getSlot(i, y)
+			fillSlot(i, y + 1, temp.color)
+		end
+		clearSlot(i, y)
+	end
+
+
+end
+
