@@ -26,3 +26,10 @@ function nextCompound()
 	end
 	return table.remove(bag)
 end
+
+function peekCompound()
+	if #bag == 0 then
+		makeBag()
+	end
+	return bag[#bag]
+end

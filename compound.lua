@@ -351,23 +351,23 @@ function makeFunkyRight(startX, startY)
 end
 
 
-function placeCompound(compound)
+function placeCompound(grid, compound)
 	local subBlocks = compound.getSubBlocks()
 	for i = 1, 4 do
-		fillSlot(subBlocks[i][1], subBlocks[i][2], compound.getColor())
+		fillSlot(grid, subBlocks[i][1], subBlocks[i][2], compound.getColor())
 	end
 end
 
-function destroyCompound(compound)
+function destroyCompound(grid, compound)
 	local subBlocks = compound.getSubBlocks()
 	for i = 1, 4 do
-		clearSlot(subBlocks[i][1], subBlocks[i][2])
+		clearSlot(grid, subBlocks[i][1], subBlocks[i][2])
 	end
 end
 
 --compound given to function should be in new position
-function canCompoundBePlaced(compound)
-	gridWidth, gridHeight = getGridDimensions()
+function canCompoundBePlaced(grid, compound)
+	gridWidth, gridHeight = getGridDimensions(grid)
 	--check if compound is off the grid
 
 	local subBlocks = compound.getSubBlocks()
@@ -378,7 +378,7 @@ function canCompoundBePlaced(compound)
 			return false
 		end
 
-		if not isSlotEmpty(subBlock[1], subBlock[2]) then
+		if not isSlotEmpty(grid, subBlock[1], subBlock[2]) then
 			return false
 		end
 	end
@@ -387,11 +387,11 @@ function canCompoundBePlaced(compound)
 end
 
 
-function moveCompound(compound, dx, dy)
+function moveCompound(grid, compound, dx, dy)
 	local subBlocks = compound.getSubBlocks()
 	for _, subBlock in ipairs(subBlocks) do
 		local newPosition = {subBlock[1] + dx, subBlock[2] + dy}
-		gridWidth, gridHeight = getGridDimensions()
+		gridWidth, gridHeight = getGridDimensions(grid)
 		if newPosition[1] < 1 or newPosition[1] > gridWidth or newPosition[2] < 1 or newPosition[2] > gridHeight then
 			return false
 		end
@@ -403,22 +403,22 @@ function moveCompound(compound, dx, dy)
 			end
 		end
 
-		if not itself and not isSlotEmpty(newPosition[1], newPosition[2]) then
+		if not itself and not isSlotEmpty(grid, newPosition[1], newPosition[2]) then
 			return false
 		end
 	end
 
-	destroyCompound(compound)
+	destroyCompound(grid, compound)
 	local currentPosition = compound.getPosition()
 	compound.setPosition(currentPosition[1] + dx, currentPosition[2] + dy)
-	placeCompound(compound)
+	placeCompound(grid, compound)
 	return true
 end
 
-function isCompoundGrounded(compound) --check y position to see if its on the ground/on another block
+function isCompoundGrounded(grid, compound) --check y position to see if its on the ground/on another block
 	local subBlocks = compound.getSubBlocks()
 	for _, subBlock in ipairs(subBlocks) do
-		gridWidth, gridHeight = getGridDimensions() --do i need local here? didnt put bc of moveCompound function not having
+		gridWidth, gridHeight = getGridDimensions(grid) --do i need local here? didnt put bc of moveCompound function not having
 
 		--checks if compound is on the bottom of the grid
 		if subBlock[2] == gridHeight then
@@ -435,7 +435,7 @@ function isCompoundGrounded(compound) --check y position to see if its on the gr
 			end
 		end
 
-		if not itself and not isSlotEmpty(beneathBlock[1], beneathBlock[2]) then
+		if not itself and not isSlotEmpty(grid, beneathBlock[1], beneathBlock[2]) then
 			return true
 		end
 	end
